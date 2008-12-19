@@ -1,6 +1,6 @@
 ﻿// ----------------------------------------------------------------------------
 //
-// OpenSteer - Action Script 3 Port
+// PaperSteer - Papervision3D Port of OpenSteer
 // Port by Mohammad Haseeb aka M.H.A.Q.S.
 // http://www.tabinda.net
 //
@@ -30,26 +30,59 @@
 //
 // ----------------------------------------------------------------------------
 
-package tabinda.papersteer
+package tabinda.demo
 {
-	public class Colors
+	import tabinda.papersteer.*;
+	
+	public class DeferredLine
 	{
-		public static function toHex(r:int = 0.0, g:int = 0.0, b:int = 0.0):uint
+		var startPoint:Vector3;
+		var endPoint:Vector3;
+		var color:uint;
+
+		static var index:int = 0;
+		static var size:int = 3000;
+		static var deferredLineArray:Vector.<DeferredLine> = new Vector.<DeferredLine>(size);
+		
+		public function DeferredLine()
 		{
-			var tmp:String = "" + r + "" + g + "" + b;
-			return uint(tmp);
 		}
 		
-		public static  var Black:uint = 0x000000;
-		public static  var White:uint = 0xFFFFFF;
-		public static  var Red::uint = 0xCC0000
-		public static  var Yellow::uint = 0xFFFF00;
-		public static  var Green::uint = 0x00CC00;
-		public static  var Cyan::uint = 0x3399CC;
-		public static  var Blue::uint = 0x0099FF;
-		public static  var Magenta::uint = 0x666699;
-		public static  var Orange::uint = 0xFF9900;
-		public static  var LightGray::uint = 0xCCCCCC;
-		public static  var DarkGray:uint = 0x666666;
+				
+		public static function init():void
+		{
+			for (var i:int = 0; i < size; i++)
+			{
+				deferredLineArray[i] = new DeferredLine();
+			}
+		}
+
+		public static function AddToBuffer(s:Vector3, e:Vector3, c:uint):void
+		{
+			if (index < size)
+			{
+				deferredLineArray[index].startPoint = s;
+				deferredLineArray[index].endPoint = e;
+				deferredLineArray[index].color = c;
+				index++;
+			}
+			else
+			{
+				//trace("overflow in deferredDrawLine buffer");
+			}
+		}
+
+		public static function DrawAll():void
+		{
+			// draw all lines in the buffer
+			for (var i:int = 0; i < index; i++)
+			{
+				var dl:DeferredLine = deferredLineArray[i];
+				Drawing.iDrawLine(dl.startPoint, dl.endPoint, dl.color);
+			}
+
+			// reset buffer index
+			index = 0;
+		}
 	}
 }

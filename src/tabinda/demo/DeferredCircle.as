@@ -1,6 +1,6 @@
 ﻿// ----------------------------------------------------------------------------
 //
-// OpenSteer - Action Script 3 Port
+// PaperSteer - Papervision3D Port of OpenSteer
 // Port by Mohammad Haseeb aka M.H.A.Q.S.
 // http://www.tabinda.net
 //
@@ -30,30 +30,68 @@
 //
 // ----------------------------------------------------------------------------
 
-package tabinda.papersteer
+package tabinda.demo
 {
-	public class BruteForceProximityDatabase implements IProximityDatabase
+	import tabinda.papersteer.*;
+	
+	public class DeferredCircle
 	{
-		// Contains all tokens in database
-		//List<TokenType> group;
-		var group:Array;
+		var radius:Number;
+		var axis:Vector3;
+		var center:Vector3;
+		var color:uint;
+		var segments:int;
+		var filled:Boolean;
+		var in3d:Boolean;
 
-		// constructor
-		public function BruteForceProximityDatabase():void
+		static var index:int = 0;
+		static const size:int = 500;
+		static var deferredCircleArray:Vector.<DeferredCircle> = new Vector.<DeferredCircle>(size);
+		
+		public function DeferredCircle()
 		{
-			group = new Array();
+			
+		}
+		
+		public static function init():void
+		{
+			for (var i:int = 0; i < size; i++)
+			{
+				deferredCircleArray[i] = new DeferredCircle();
+			}
 		}
 
-		// allocate a token to represent a given client object in this database
-		public function AllocateToken(parentObject:Object):ITokenForProximityDatabase
+		public static function AddToBuffer(radius:Number, axis:Vector3, center:Vector3, color:uint, segments:int,filled:Boolean, in3d:Boolean):void
 		{
-			return new TokenType(parentObject, this);
+			
+			if (index < size)
+			{
+				deferredCircleArray[index].radius = radius;
+				deferredCircleArray[index].axis = axis;
+				deferredCircleArray[index].center = center;
+				deferredCircleArray[index].color = color;
+				deferredCircleArray[index].segments = segments;
+				deferredCircleArray[index].filled = filled;
+				deferredCircleArray[index].in3d = in3d;
+				index++;
+			}
+			else
+			{
+				//trace("overflow in deferredDrawCircle buffer");
+			}
 		}
 
-		// return the number of tokens currently in the database
-		public function get Count():int
+		public static function DrawAll():void
 		{
-			return group.length;
+			// draw all circles in the buffer
+			for (var i:int = 0; i < index; i++)
+			{
+				var dc:DeferredCircle = deferredCircleArray[i];
+				Drawing.DrawCircleOrDisk(dc.radius, dc.axis, dc.center, dc.color, dc.segments, dc.filled, dc.in3d);
+			}
+
+			// reset buffer index
+			index = 0;
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿// ----------------------------------------------------------------------------
 //
-// OpenSteer - Action Script 3 Port
+// PaperSteer - Papervision3D Port of OpenSteer
 // Port by Mohammad Haseeb aka M.H.A.Q.S.
 // http://www.tabinda.net
 //
@@ -30,12 +30,13 @@
 //
 // ----------------------------------------------------------------------------
 
-package tabinda.papersteer
+package tabinda.demo 
 {
-	public final class SeenFromState
+	public final class Phase
 	{
-		public static  const Outside:String="Outside";
-		public static  const Inside:String="Inside";
-		public static  const Both:String="Both";
+		public static const Overhead:int = 0;
+		public static const Update:int = 1;
+		public static const Draw:int = 2;
+		public static const Count:int = 3;
 	}
 }
