@@ -32,10 +32,12 @@
 
 package tabinda.papersteer
 {
+	import flash.display.Sprite;
+	
 	/**
 	 * Provides support to visualize the recent path of a vehicle.
 	 */
-	public class Trail
+	public class Trail extends Sprite
 	{
 		private var currentIndex:int;			// Array index of most recently recorded point
 		private var duration:Number;			// Duration (in seconds) of entire trail
@@ -163,7 +165,11 @@ package tabinda.papersteer
 					if (j == 0)
 					{
 						// draw segment from current position to first trail point
-						drawer.LineAlpha(currentPosition, vertices[index], color, 1);
+						graphics.clear();
+						graphics.lineStyle(1, color, opacity);
+						graphics.moveTo(currentPosition.x, currentPosition.y);
+						graphics.lineTo(vertices[index].x,vertices[index].y);
+						graphics.endFill();
 					}
 					else
 					{
@@ -171,7 +177,12 @@ package tabinda.papersteer
 						var minO:Number = 0.05; // minimum opacity
 						var fraction:Number = Number(j) / vertices.length;
 						var opacity:Number = (fraction * (1 - minO)) + minO;
-						drawer.LineAlpha(vertices[index], vertices[next], color, opacity);
+						
+						graphics.clear();
+						graphics.lineStyle(1, color, opacity);
+						graphics.moveTo(vertices[index].x, vertices[index].y);
+						graphics.lineTo(vertices[next].x, vertices[next].y);
+						graphics.endFill();
 					}
 				}
 				index = next;
